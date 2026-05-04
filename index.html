@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistencia Legal Chilena - Expertos en Legislación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Background elements -->
+        <div class="bg-gradient"></div>
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+
+        <!-- Navigation -->
+        <nav class="glass">
+            <div class="nav-content">
+                <div class="logo">
+                    <i data-lucide="scale"></i>
+                    <span>Denuncias Ley Chile</span>
+                </div>
+                <div class="nav-links" id="main-nav" style="display: none;">
+                    <button onclick="showScreen('home')" class="nav-btn">Inicio</button>
+                    <button onclick="showScreen('history')" class="nav-btn">Historial</button>
+                    <button onclick="showScreen('lawyer-auth')" class="nav-btn highlight-btn">Portal
+                        Abogados</button>
+                </div>
+                <div class="nav-links">
+                    <div id="auth-nav">
+                        <button onclick="showScreen('auth')" class="btn-primary btn-sm">Iniciar Sesión</button>
+                    </div>
+                    <div id="user-nav" style="display: none;">
+                        <span id="user-display-name"></span>
+                        <button onclick="handleLogout()" class="nav-btn"><i data-lucide="log-out"></i></button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <!-- Screen 1: Home -->
+            <section id="home-screen" class="screen">
+                <header class="hero">
+                    <h1>Asistencia Legal Chilena</h1>
+                    <p>Seleccione una categoría para comenzar su consulta legal especializada.</p>
+                </header>
+                <div class="card-grid">
+                    <div class="glass-card interactive" onclick="selectCategory('Ley Karin')">
+                        <div class="card-icon"><i data-lucide="shield-alert"></i></div>
+                        <h2>Ley Karin</h2>
+                        <p>Protección integral contra el acoso laboral y sexual en el entorno de trabajo.</p>
+                        <span class="btn-secondary">Comenzar</span>
+                    </div>
+                    <div class="glass-card interactive" onclick="selectCategory('Enfermedades Profesionales')">
+                        <div class="card-icon"><i data-lucide="heart-pulse"></i></div>
+                        <h2>Enfermedades Profesionales</h2>
+                        <p>Asesoría en derechos de salud ocupacional y patologías laborales.</p>
+                        <span class="btn-secondary">Comenzar</span>
+                    </div>
+                    <div class="glass-card interactive" onclick="selectCategory('Código del Trabajo')">
+                        <div class="card-icon"><i data-lucide="book-open"></i></div>
+                        <h2>Código del Trabajo</h2>
+                        <p>Consultas sobre contratos, despidos y normativa laboral vigente.</p>
+                        <span class="btn-secondary">Comenzar</span>
+                    </div>
+                    <div class="glass-card interactive" onclick="selectCategory('Estatuto Administrativo')">
+                        <div class="card-icon"><i data-lucide="landmark"></i></div>
+                        <h2>Estatuto Administrativo</h2>
+                        <p>Normativa y derechos para funcionarios del sector público y municipal.</p>
+                        <span class="btn-secondary">Comenzar</span>
+                    </div>
+                </div>
+
+                <!-- Lawyer Entry Section -->
+                <div class="lawyer-entry-banner glass-card"
+                    style="margin-top: 4rem; text-align: center; border-color: var(--primary);">
+                    <div class="banner-content">
+                        <i data-lucide="award"
+                            style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h2>¿Eres Abogado Especialista?</h2>
+                        <p>Únete a nuestra red nacional de expertos y recibe casos filtrados por tu región y comuna.</p>
+                        <button onclick="showScreen('lawyer-registration')" class="btn-primary"
+                            style="margin-top: 1.5rem;">Registrarse como Abogado</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen 2: Input Form -->
+            <section id="input-screen" class="screen">
+                <div class="form-container glass">
+                    <div class="form-header">
+                        <button onclick="showScreen('home')" class="back-btn"><i data-lucide="arrow-left"></i>
+                            Volver</button>
+                        <h2 id="selected-category-title">Ley Karin</h2>
+                    </div>
+
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchTab('text')"><i data-lucide="type"></i>
+                            Texto</button>
+                        <button class="tab-btn" onclick="switchTab('file')"><i data-lucide="file-text"></i> PDF</button>
+                        <button class="tab-btn" onclick="switchTab('audio')"><i data-lucide="mic"></i> Audio</button>
+                    </div>
+
+                    <div id="text-input" class="tab-content active">
+                        <textarea placeholder="Describa los detalles de su caso aquí..."></textarea>
+                    </div>
+
+                    <div id="file-input" class="tab-content">
+                        <div class="drop-zone">
+                            <i data-lucide="upload-cloud"></i>
+                            <p>Arrastre su archivo PDF aquí o <span>seleccione uno</span></p>
+                            <input type="file" hidden accept=".pdf">
+                        </div>
+                    </div>
+
+                    <div id="audio-input" class="tab-content">
+                        <div class="audio-control">
+                            <button class="record-btn"><i data-lucide="mic"></i></button>
+                            <p>Toque para iniciar grabación</p>
+                            <div class="wave-sim">
+                                <span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button class="btn-primary" onclick="processAnalysis()">Analizar y Buscar Referencias
+                            Legales</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen 3: Results -->
+            <section id="results-screen" class="screen">
+                <div class="results-container">
+                    <header class="results-header">
+                        <h2>Análisis de Hallazgos Legales</h2>
+                        <p>Resultados procesados según la normativa chilena vigente.</p>
+                    </header>
+
+                    <div class="results-grid">
+                        <div class="glass-card">
+                            <h3><i data-lucide="shield-check"></i> Ley Karin</h3>
+                            <p>Se identifican elementos de acoso laboral según el Art. 2 de la Ley 21.643. Se recomienda
+                                activar protocolo preventivo.</p>
+                        </div>
+                        <div class="glass-card">
+                            <h3><i data-lucide="file-text"></i> Código del Trabajo</h3>
+                            <p>Referencia al Art. 160 sobre causales de terminación de contrato y protección a la
+                                dignidad del trabajador.</p>
+                        </div>
+                        <div class="glass-card">
+                            <h3><i data-lucide="landmark"></i> Estatuto Administrativo</h3>
+                            <p>Normas de conducta y responsabilidad funcionaria aplicables al sector público (si
+                                corresponde).</p>
+                        </div>
+                        <div class="glass-card">
+                            <h3><i data-lucide="balance-scale"></i> Código Civil</h3>
+                            <p>Responsabilidad contractual y extracontractual por daños morales derivados del entorno
+                                laboral.</p>
+                        </div>
+                    </div>
+
+                    <div class="presentation-box glass">
+                        <h3>¿Desea transformar esta información en una presentación jurídica sólida?</h3>
+                        <p>Seleccione el organismo de destino para generar el documento formal.</p>
+                        <div class="action-buttons">
+                            <button class="btn-action" onclick="generateDoc('SUSESO')">Presentar a SUSESO</button>
+                            <button class="btn-action" onclick="generateDoc('Contraloría')">Presentar a
+                                Contraloría</button>
+                            <button class="btn-action" onclick="generateDoc('Inspección')">Presentar a Inspección del
+                                Trabajo</button>
+                        </div>
+                        <div class="export-options">
+                            <span>Descargar como:</span>
+                            <button class="export-btn" onclick="downloadFormat('Word')"><i data-lucide="file-text"></i>
+                                Word</button>
+                            <button class="export-btn" onclick="downloadFormat('PDF')"><i data-lucide="file-output"></i>
+                                PDF</button>
+                            <button class="export-btn highlight" onclick="showScreen('complaint')"><i
+                                    data-lucide="upload-cloud"></i> Subir Denuncia</button>
+                            <button class="export-btn highlight" onclick="showScreen('lawyers')"><i
+                                    data-lucide="users"></i> Abogados</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen 4: Complaint Links -->
+            <section id="complaint-screen" class="screen">
+                <div class="complaint-container glass">
+                    <div class="form-header">
+                        <button onclick="showScreen('results')" class="back-btn"><i data-lucide="arrow-left"></i> Volver
+                            a Resultados</button>
+                        <h2>Presentar Denuncia Oficial</h2>
+                        <p>Seleccione la institución correspondiente para ser redirigido al portal oficial de denuncias.
+                        </p>
+                    </div>
+
+                    <div class="institution-grid">
+                        <a href="https://www.suseso.cl/606/w3-channel.html" target="_blank"
+                            class="institution-card glass interactive">
+                            <div class="inst-icon"><i data-lucide="building-2"></i></div>
+                            <h3>SUSESO</h3>
+                            <p>Superintendencia de Seguridad Social</p>
+                            <span class="external-link">Ir al formulario <i data-lucide="external-link"></i></span>
+                        </a>
+
+                        <a href="https://www.contraloria.cl/portalweb/web/cgr/atencion-de-reclamos-funcionarios"
+                            target="_blank" class="institution-card glass interactive">
+                            <div class="inst-icon"><i data-lucide="gavel"></i></div>
+                            <h3>Contraloría</h3>
+                            <p>Contraloría General de la República</p>
+                            <span class="external-link">Ir al formulario <i data-lucide="external-link"></i></span>
+                        </a>
+
+                        <a href="https://midt.dirtrab.cl/" target="_blank" class="institution-card glass interactive">
+                            <div class="inst-icon"><i data-lucide="briefcase"></i></div>
+                            <h3>Inspección del Trabajo</h3>
+                            <p>Dirección del Trabajo (Portal Mi DT)</p>
+                            <span class="external-link">Ir al formulario <i data-lucide="external-link"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen 4: Lawyers Search -->
+            <section id="lawyers-screen" class="screen">
+                <div class="lawyers-container glass">
+                    <div class="form-header">
+                        <button onclick="showScreen('results')" class="back-btn"><i data-lucide="arrow-left"></i> Volver
+                            a Resultados</button>
+                        <h2>Encontrar Abogados Especialistas</h2>
+                    </div>
+
+                    <div class="selection-grid">
+                        <div class="select-group">
+                            <label>Región</label>
+                            <select id="region-select" onchange="updateComunas()">
+                                <option value="">Seleccione Región</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label>Comuna</label>
+                            <select id="comuna-select" onchange="searchLawyers()">
+                                <option value="">Seleccione Comuna</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="lawyers-results glass" id="lawyers-list">
+                        <div class="empty-state">
+                            <i data-lucide="search"></i>
+                            <p>Seleccione una región y comuna para ver abogados disponibles.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen 5: Lawyer Contact Authorization -->
+            <section id="contact-screen" class="screen">
+                <div class="contact-form-container glass">
+                    <div class="form-header">
+                        <button onclick="showScreen('lawyers')" class="back-btn"><i data-lucide="arrow-left"></i>
+                            Volver</button>
+                        <h2>Autorización de Contacto</h2>
+                    </div>
+
+                    <div class="lawyer-summary glass">
+                        <p>Usted está contactando a: <strong id="selected-lawyer-name">Nombre del Abogado</strong></p>
+                    </div>
+
+                    <div class="legal-notice-box glass">
+                        <h3>Aviso Legal</h3>
+                        <p>"Autorizo de manera expresa y libre el compartir documentos e información para revisión
+                            exclusivamente utilizada por el abogado seleccionado, entendiendo que mis datos serán
+                            tratados conforme a la normativa de protección de datos vigente."</p>
+
+                        <div class="auth-check">
+                            <input type="checkbox" id="auth-check-box">
+                            <label for="auth-check-box">He leído y autorizo de manera expresa el envío de mi
+                                información.</label>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-inputs">
+                        <div class="input-group">
+                            <label for="user-phone">Teléfono de Contacto</label>
+                            <input type="tel" id="user-phone" placeholder="+56 9 1234 5678">
+                        </div>
+                        <div class="info-preview glass">
+                            <h4>Información que será enviada:</h4>
+                            <ul>
+                                <li>Relato del caso y documentos adjuntos</li>
+                                <li>Análisis legal generado por la aplicación</li>
+                                <li>Su información de contacto</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button class="btn-primary" onclick="sendContactRequest()">Confirmar y Enviar al
+                            Abogado</button>
+                    </div>
+                </div>
+            </section>
+            <!-- Screen 7: Lawyer Registration & Payment -->
+            <section id="lawyer-registration-screen" class="screen">
+                <div class="lawyer-reg-container glass">
+                    <!-- Progress Bar -->
+                    <div class="reg-progress">
+                        <div class="progress-step active" id="step-1-indicator">1. Información</div>
+                        <div class="progress-step" id="step-2-indicator">2. Pago</div>
+                        <div class="progress-step" id="step-3-indicator">3. Confirmación</div>
+                    </div>
+
+                    <!-- Step 1: Form -->
+                    <div id="lawyer-step-1" class="reg-step active">
+                        <div class="form-header">
+                            <button onclick="showScreen('home')" class="back-btn"><i data-lucide="arrow-left"></i>
+                                Volver</button>
+                            <h2>Registro de Abogados</h2>
+                        </div>
+                        <p class="step-desc">Complete sus datos profesionales para unirse a la red.</p>
+
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Nombre Completo</label>
+                                <input type="text" id="lawyer-name" placeholder="Ej: Juan Pérez Soto">
+                            </div>
+                            <div class="input-group">
+                                <label>RUT</label>
+                                <input type="text" id="lawyer-rut" placeholder="12.345.678-9">
+                            </div>
+                            <div class="input-group">
+                                <label>Correo Electrónico</label>
+                                <input type="email" id="lawyer-email" placeholder="abogado@ejemplo.cl">
+                            </div>
+                            <div class="input-group">
+                                <label>Teléfono de Contacto</label>
+                                <input type="tel" id="lawyer-phone" placeholder="+56 9 1234 5678">
+                            </div>
+                            <div class="input-row" style="display: flex; gap: 1rem; width: 100%;">
+                                <div class="input-group" style="flex: 1;">
+                                    <label>R.N.A. (Opcional)</label>
+                                    <input type="text" id="lawyer-rna" placeholder="Ej: 12345">
+                                </div>
+                                <div class="input-group" style="flex: 1;">
+                                    <label>Contraseña para Portal</label>
+                                    <input type="password" id="lawyer-password" placeholder="••••••••">
+                                </div>
+                            </div>
+                            <div class="input-group full-width">
+                                <label>Especialidades (Seleccione una o más)</label>
+                                <div class="specialty-checkbox-grid glass">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="specialty" value="Ley Karin">
+                                        <span>Ley Karin</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="specialty" value="Código del Trabajo">
+                                        <span>Código del Trabajo</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="specialty" value="Estatuto Administrativo">
+                                        <span>Estatuto Administrativo</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="specialty" value="Civil">
+                                        <span>Civil</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="specialty" value="Todas">
+                                        <span>Todas</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Región de Cobertura</label>
+                                <select id="lawyer-region" onchange="updateLawyerComunas()">
+                                    <option value="">Seleccione Región</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Comuna Base</label>
+                                <select id="lawyer-comuna">
+                                    <option value="">Seleccione Comuna</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-footer">
+                            <button class="btn-primary w-full" onclick="nextLawyerStep(2)">Continuar al Pago ($10.000
+                                CLP)</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Checkout -->
+                    <div id="lawyer-step-2" class="reg-step">
+                        <div class="form-header">
+                            <button onclick="nextLawyerStep(1)" class="back-btn"><i data-lucide="arrow-left"></i> Volver
+                                a Datos</button>
+                            <h2>Finalizar Registro</h2>
+                        </div>
+
+                        <div class="checkout-layout">
+                            <div class="payment-details">
+                                <div class="glass-card payment-card">
+                                    <div class="card-chip"></div>
+                                    <div class="card-number">•••• •••• •••• ••••</div>
+                                    <div class="card-info">
+                                        <div class="card-holder">
+                                            <span>Titular</span>
+                                            <div id="card-name-display">NOMBRE TITULAR</div>
+                                        </div>
+                                        <div class="card-expiry">
+                                            <span>Vence</span>
+                                            <div>MM/AA</div>
+                                        </div>
+                                    </div>
+                                    <div class="card-brand">VISA</div>
+                                </div>
+
+                                <div class="payment-form">
+                                    <div class="input-group">
+                                        <label>Número de Tarjeta</label>
+                                        <input type="text" placeholder="0000 0000 0000 0000">
+                                    </div>
+                                    <div class="input-row">
+                                        <div class="input-group">
+                                            <label>Vencimiento</label>
+                                            <input type="text" placeholder="MM/AA">
+                                        </div>
+                                        <div class="input-group">
+                                            <label>CVV</label>
+                                            <input type="password" placeholder="***">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="order-summary glass">
+                                <h3>Resumen de Suscripción</h3>
+                                <div class="summary-item">
+                                    <span>Activación de Perfil</span>
+                                    <span>$10.000</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Cobertura Regional</span>
+                                    <span>Incluido</span>
+                                </div>
+                                <div class="summary-total">
+                                    <span>Total a pagar</span>
+                                    <span>$10.000 CLP</span>
+                                </div>
+                                <button class="btn-primary w-full" onclick="processLawyerPayment()">Pagar y Activar
+                                    Perfil</button>
+                                <p class="secure-note"><i data-lucide="lock"></i> Pago seguro procesado por Transbank
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Success -->
+                    <div id="lawyer-step-3" class="reg-step">
+                        <div class="success-message">
+                            <div class="success-icon">
+                                <i data-lucide="check-circle"></i>
+                            </div>
+                            <h2>¡Registro Completado!</h2>
+                            <p>Bienvenido a la red, <strong id="registered-lawyer-name">Abogado</strong>. Su perfil ha
+                                sido activado y comenzará a recibir casos de la región seleccionada directamente en su
+                                correo.</p>
+                            <button class="btn-primary" onclick="showScreen('home')">Ir al Inicio</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen 6: Authentication -->
+            <section id="auth-screen" class="screen active">
+                <div class="auth-container glass">
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+                        <button class="auth-tab" onclick="switchAuthTab('register')">Registrarse</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <div id="login-form" class="auth-form active">
+                        <h2>Bienvenido de nuevo</h2>
+                        <p>Ingrese sus credenciales para continuar.</p>
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" id="login-email" placeholder="correo@ejemplo.com">
+                        </div>
+                        <div class="input-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="login-password" placeholder="••••••••">
+                        </div>
+                        <button class="btn-primary w-full" onclick="handleLogin()">Entrar</button>
+                        <div class="social-auth">
+                            <span>O continuar con</span>
+                            <div class="social-btns">
+                                <button class="social-btn google-btn" onclick="handleGoogleLogin()">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                                    Continuar con Google
+                                </button>
+                                <button class="social-btn facebook-btn" onclick="handleFacebookLogin()">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/></svg>
+                                    Continuar con Facebook
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div id="register-form" class="auth-form">
+                        <h2>Crear Cuenta</h2>
+                        <p>Únase a la plataforma de asistencia legal más avanzada.</p>
+                        <div class="input-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" id="reg-name" placeholder="Juan Pérez">
+                        </div>
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" id="reg-email" placeholder="correo@ejemplo.com">
+                        </div>
+                        <div class="input-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="reg-password" placeholder="••••••••">
+                        </div>
+                        <button class="btn-primary w-full" onclick="handleRegister()">Registrarse</button>
+                        <div class="social-auth">
+                            <span>O registrarse con</span>
+                            <div class="social-btns">
+                                <button class="social-btn google-btn" onclick="handleGoogleLogin()">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                                    Registrarse con Google
+                                </button>
+                                <button class="social-btn facebook-btn" onclick="handleFacebookLogin()">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/></svg>
+                                    Registrarse con Facebook
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Screen 8: Lawyer Authentication -->
+            <section id="lawyer-auth-screen" class="screen">
+                <div class="auth-container glass">
+                    <div class="auth-form active">
+                        <h2>Portal de Abogados</h2>
+                        <p>Ingrese al portal para gestionar sus casos y suscripción.</p>
+                        <div class="input-group">
+                            <label>Correo Electrónico</label>
+                            <input type="email" id="lawyer-login-email" placeholder="abogado@ejemplo.cl">
+                        </div>
+                        <div class="input-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="lawyer-login-password" placeholder="••••••••">
+                        </div>
+                        <button class="btn-primary w-full" onclick="handleLawyerLogin()">Ingresar al Portal</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen 9: Lawyer Dashboard -->
+            <section id="lawyer-dashboard-screen" class="screen">
+                <div class="lawyer-dashboard-container glass">
+                    <div class="form-header" style="justify-content: space-between;">
+                        <h2>Panel de Control - Abogado</h2>
+                        <button class="btn-secondary" onclick="handleLawyerLogout()"><i data-lucide="log-out"></i>
+                            Cerrar Sesión</button>
+                    </div>
+
+                    <div class="dashboard-grid"
+                        style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 2rem;">
+                        <div class="dashboard-main glass-card">
+                            <h3><i data-lucide="mail"></i> Bandeja de Casos</h3>
+                            <p class="text-muted" style="margin-bottom: 1.5rem;">Aquí aparecerán las solicitudes de
+                                contacto de los clientes.</p>
+
+                            <div class="case-list">
+                                <!-- Dynamic messages will be injected here -->
+                            </div>
+                        </div>
+
+                        <div class="dashboard-sidebar">
+                            <div class="glass-card" style="margin-bottom: 2rem;">
+                                <h3><i data-lucide="user"></i> Mi Perfil</h3>
+                                <p style="margin-top: 1rem;">Estado: <strong style="color: #10b981;">Activo</strong></p>
+                                <p>Suscripción: Mensual ($10.000 CLP)</p>
+                            </div>
+
+                            <div class="glass-card danger-zone" style="border-color: rgba(239, 68, 68, 0.3);">
+                                <h3 style="color: #ef4444;"><i data-lucide="alert-triangle"></i> Zona de Peligro</h3>
+                                <p style="font-size: 0.9rem; margin-top: 1rem; margin-bottom: 1rem;">Si cancela su
+                                    suscripción, dejará de aparecer en los resultados de búsqueda para los clientes.</p>
+                                <button class="btn-primary w-full"
+                                    style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444;"
+                                    onclick="cancelLawyerSubscription()">Dar de baja suscripción</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Toast Notifications -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
