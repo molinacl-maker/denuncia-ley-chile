@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
             return res.status(400).json({ error: 'El texto del caso es requerido' });
         }
 
-        const apiKey = process.env.GEMINI_API_KEY;
+        const apiKey = process.env.GEMINI_API_KEY.trim();
         if (!apiKey) {
             return res.status(500).json({ error: 'GEMINI_API_KEY no está configurada en Vercel' });
         }
@@ -46,7 +46,7 @@ Mantenlo conciso, directo y fácil de entender para alguien que no es abogado.`;
         if (!response.ok) {
             const errorData = await response.text();
             console.error("Gemini API Error:", errorData);
-            return res.status(500).json({ error: 'Error al comunicarse con la API de IA' });
+            return res.status(500).json({ error: `Google rechazó la llave: ${errorData}` });
         }
 
         const data = await response.json();
