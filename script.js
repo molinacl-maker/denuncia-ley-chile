@@ -275,7 +275,8 @@ async function processAnalysis() {
         });
 
         if (!response.ok) {
-            throw new Error('Error en la comunicación con la API');
+            const errText = await response.text();
+            throw new Error(`Código ${response.status}: ${errText}`);
         }
 
         const data = await response.json();
@@ -289,20 +290,22 @@ async function processAnalysis() {
             saveCase();
             showToast('Análisis completado exitosamente.');
         } else {
-            throw new Error('Respuesta vacía');
+            throw new Error('La IA no devolvió ningún resultado.');
         }
 
     } catch (error) {
-        console.error(error);
+        console.error("Detalle del error:", error);
         resultsContainer.innerHTML = `
             <div class="glass-card" style="grid-column: 1 / -1; text-align: center; border-color: #ef4444;">
                 <i data-lucide="alert-triangle" style="color: #ef4444; width: 48px; height: 48px; margin-bottom: 1rem;"></i>
-                <h3 style="color: #ef4444;">No se pudo completar el análisis</h3>
-                <p>Ocurrió un error al contactar al motor de Inteligencia Artificial. Por favor, asegúrese de que la clave de API esté configurada correctamente en Vercel.</p>
+                <h3 style="color: #ef4444;">Detalle del Error Técnico</h3>
+                <p style="margin-bottom: 1rem;">Ocurrió un error al contactar al motor de IA. El servidor dice:</p>
+                <div style="background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.9em; margin-bottom: 1rem; word-break: break-all;">
+                    ${error.message}
+                </div>
                 <button class="btn-secondary" onclick="showScreen('input')" style="margin-top: 1rem;">Volver e intentar de nuevo</button>
             </div>
         `;
-        // Re-initialize Lucide icons for the error message
         lucide.createIcons();
     }
 }
