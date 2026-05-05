@@ -241,13 +241,70 @@ function switchTab(tabId) {
     document.getElementById(`${tabId}-input`).classList.add('active');
 }
 
-// Analysis Processing (Simulation)
-function processAnalysis() {
-    showToast('Analizando caso y buscando referencias legales...');
-    setTimeout(() => {
-        showScreen('results');
-        saveCase();
-    }, 2000);
+// Analysis Processing (AI Integration)
+async function processAnalysis() {
+    const caseText = document.getElementById('case-text').value;
+    
+    if (!caseText.trim()) {
+        showToast('Por favor, describa los detalles de su caso antes de continuar.');
+        return;
+    }
+
+    showToast('Analizando caso usando Inteligencia Artificial...');
+    
+    const resultsContainer = document.getElementById('ai-results-container');
+    resultsContainer.innerHTML = `
+        <div class="glass-card" style="grid-column: 1 / -1; text-align: center;">
+            <div class="spinner"></div>
+            <p>La IA está evaluando las normativas y antecedentes... esto puede tomar unos segundos.</p>
+        </div>
+    `;
+    
+    showScreen('results');
+
+    try {
+        const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: caseText,
+                category: document.getElementById('selected-category-title').innerText
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Error en la comunicación con la API');
+        }
+
+        const data = await response.json();
+        
+        if (data.result) {
+            resultsContainer.innerHTML = `
+                <div class="glass-card" style="grid-column: 1 / -1; text-align: left;">
+                    ${data.result}
+                </div>
+            `;
+            saveCase();
+            showToast('Análisis completado exitosamente.');
+        } else {
+            throw new Error('Respuesta vacía');
+        }
+
+    } catch (error) {
+        console.error(error);
+        resultsContainer.innerHTML = `
+            <div class="glass-card" style="grid-column: 1 / -1; text-align: center; border-color: #ef4444;">
+                <i data-lucide="alert-triangle" style="color: #ef4444; width: 48px; height: 48px; margin-bottom: 1rem;"></i>
+                <h3 style="color: #ef4444;">No se pudo completar el análisis</h3>
+                <p>Ocurrió un error al contactar al motor de Inteligencia Artificial. Por favor, asegúrese de que la clave de API esté configurada correctamente en Vercel.</p>
+                <button class="btn-secondary" onclick="showScreen('input')" style="margin-top: 1rem;">Volver e intentar de nuevo</button>
+            </div>
+        `;
+        // Re-initialize Lucide icons for the error message
+        lucide.createIcons();
+    }
 }
 
 // Case Storage
