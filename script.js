@@ -107,6 +107,7 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
+const db = firebase.firestore();
 
 function handleGoogleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -216,6 +217,9 @@ function showScreen(screenId) {
         if (screenId === 'lawyers') {
             initLawyersScreen();
         }
+        if (screenId === 'history') {
+            loadHistory();
+        }
     }
 }
 
@@ -287,7 +291,7 @@ async function processAnalysis() {
                     ${data.result}
                 </div>
             `;
-            saveCase();
+            saveCase(caseText, data.result);
             showToast('Análisis completado exitosamente.');
         } else {
             throw new Error('La IA no devolvió ningún resultado.');
@@ -310,16 +314,130 @@ async function processAnalysis() {
     }
 }
 
-// Case Storage
-function saveCase() {
+// Case Storage (Firestore)
+async function saveCase(caseText, aiResult) {
+    if (!currentUser) return; // Only save if user is logged in
+    
     const newCase = {
-        id: Date.now(),
+        userId: currentUser.id,
         category: currentCategory,
-        date: new Date().toLocaleDateString(),
+        text: caseText,
+        result: aiResult,
+        date: new Date().toISOString(),
         status: 'Analizado'
     };
-    savedCases.push(newCase);
-    localStorage.setItem('legalCases', JSON.stringify(savedCases));
+
+    try {
+        await db.collection('historial').add(newCase);
+    } catch (error) {
+        console.error("Error al guardar en el historial: ", error);
+    }
+}
+
+// Load History
+async function loadHistory() {
+    const historyList = document.getElementById('history-list');
+    historyList.innerHTML = '<div class="spinner"></div><p style="text-align:center;">Cargando historial...</p>';
+    
+    if (!currentUser) {
+        historyList.innerHTML = '<p style="text-align:center;">Debe iniciar sesión para ver su historial.</p>';
+        return;
+    }
+
+    try {
+        const snapshot = await db.collection('historial')
+            .where('userId', '==', currentUser.id)
+            .orderBy('date', 'desc')
+            .get();
+
+        if (snapshot.empty) {
+            historyList.innerHTML = '<p style="text-align:center;">No tiene casos guardados en su historial.</p>';
+            return;
+        }
+
+        historyList.innerHTML = '';
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const dateStr = new Date(data.date).toLocaleDateString();
+            const card = document.createElement('div');
+            card.className = 'glass-card';
+            card.style.textAlign = 'left';
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="background:var(--accent); color:var(--bg-dark); padding:2px 8px; border-radius:12px; font-size:0.8rem; font-weight:bold;">${data.category}</span>
+                    <span style="font-size:0.8rem; color:#aaa;">${dateStr}</span>
+                </div>
+                <p style="font-size:0.9rem; margin-bottom:10px;"><strong>Hechos:</strong> ${data.text.substring(0, 100)}...</p>
+                <div style="font-size:0.9rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                    ${data.result}
+                </div>
+            `;
+            historyList.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Error al cargar historial:", error);
+        historyList.innerHTML = '<p style="text-align:center; color:#ef4444;">Error al cargar el historial. Intente nuevamente.</p>';
+    }
+}
+
+// Print Analysis
+function printAnalysis() {
+    window.print();
+}
+
+// Document Generation (AI)
+async function generateDoc(institution) {
+    const caseText = document.getElementById('case-text').value;
+    if (!caseText) {
+        showToast('Debe haber un caso analizado para generar el documento.');
+        return;
+    }
+
+    showScreen('document');
+    const pdfArea = document.getElementById('pdf-content-area');
+    pdfArea.innerHTML = '<div style="text-align:center;"><div class="spinner" style="border-left-color:#333;"></div><p>Redactando presentación jurídica para ' + institution + '...</p></div>';
+
+    try {
+        const response = await fetch('/api/generate_doc', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: caseText,
+                category: currentCategory,
+                institution: institution
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Fallo al generar documento');
+        }
+
+        const data = await response.json();
+        pdfArea.innerHTML = data.result;
+        showToast('Documento redactado con éxito.');
+
+    } catch (error) {
+        console.error(error);
+        pdfArea.innerHTML = '<p style="color:red; text-align:center;">Error al generar el documento. Por favor intente nuevamente.</p>';
+    }
+}
+
+// PDF Export
+function downloadPDF() {
+    const element = document.getElementById('pdf-content-area');
+    const opt = {
+        margin:       15,
+        filename:     'Presentacion_Legal.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        showToast('Documento PDF descargado correctamente.');
+    });
 }
 
 // Lawyers Screen Logic

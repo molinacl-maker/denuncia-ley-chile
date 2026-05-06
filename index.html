@@ -143,6 +143,7 @@
                     <header class="results-header">
                         <h2>Análisis de Hallazgos Legales</h2>
                         <p>Resultados procesados según la normativa chilena vigente.</p>
+                        <button class="btn-secondary btn-sm" onclick="printAnalysis()" style="margin-top: 10px;"><i data-lucide="printer"></i> Imprimir Análisis</button>
                     </header>
 
                     <div class="results-grid" id="ai-results-container">
@@ -160,16 +161,42 @@
                                 Trabajo</button>
                         </div>
                         <div class="export-options">
-                            <span>Descargar como:</span>
-                            <button class="export-btn" onclick="downloadFormat('Word')"><i data-lucide="file-text"></i>
-                                Word</button>
-                            <button class="export-btn" onclick="downloadFormat('PDF')"><i data-lucide="file-output"></i>
-                                PDF</button>
                             <button class="export-btn highlight" onclick="showScreen('complaint')"><i
                                     data-lucide="upload-cloud"></i> Subir Denuncia</button>
                             <button class="export-btn highlight" onclick="showScreen('lawyers')"><i
                                     data-lucide="users"></i> Abogados</button>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document Generator Screen -->
+            <section id="document-screen" class="screen">
+                <div class="results-container">
+                    <header class="form-header">
+                        <button onclick="showScreen('results')" class="back-btn"><i data-lucide="arrow-left"></i> Volver a Resultados</button>
+                        <h2>Presentación Legal Generada</h2>
+                        <p>Este documento formal ha sido redactado por la IA basándose en su caso.</p>
+                        <div style="margin-top: 15px;">
+                            <button class="btn-primary" onclick="downloadPDF()"><i data-lucide="file-output"></i> Descargar PDF</button>
+                        </div>
+                    </header>
+                    <div id="pdf-content-area" class="glass-card document-paper" style="background: white; color: black; padding: 40px; margin-top: 20px; text-align: left; font-family: 'Times New Roman', serif; line-height: 1.6;">
+                        <!-- AI Document injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Screen -->
+            <section id="history-screen" class="screen">
+                <div class="results-container">
+                    <header class="form-header">
+                        <button onclick="showScreen('home')" class="back-btn"><i data-lucide="arrow-left"></i> Volver al Inicio</button>
+                        <h2>Mi Historial de Casos</h2>
+                        <p>Aquí encontrará todos los análisis legales que ha realizado previamente.</p>
+                    </header>
+                    <div id="history-list" class="history-grid" style="display: grid; gap: 15px; margin-top: 20px;">
+                        <!-- History items injected here -->
                     </div>
                 </div>
             </section>
@@ -602,6 +629,8 @@
     <!-- Firebase SDK (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script src="script.js"></script>
     <script>
