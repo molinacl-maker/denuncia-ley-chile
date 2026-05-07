@@ -411,7 +411,8 @@ async function generateDoc(institution) {
         });
 
         if (!response.ok) {
-            throw new Error('Fallo al generar documento');
+            const errText = await response.text();
+            throw new Error(errText);
         }
 
         const data = await response.json();
@@ -420,7 +421,17 @@ async function generateDoc(institution) {
 
     } catch (error) {
         console.error(error);
-        pdfArea.innerHTML = '<p style="color:red; text-align:center;">Error al generar el documento. Por favor intente nuevamente.</p>';
+        pdfArea.innerHTML = `
+            <div style="text-align:center; color:#ef4444;">
+                <i data-lucide="alert-triangle" style="width: 48px; height: 48px; margin-bottom: 1rem;"></i>
+                <h3>Error al generar documento</h3>
+                <p>El servidor indicó el siguiente problema:</p>
+                <div style="background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.8em; margin-top: 1rem; word-break: break-all; color: #000;">
+                    ${error.message}
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
     }
 }
 

@@ -1202,9 +1202,12 @@ select:focus {
 
 /* Print Styles */
 @media print {
+    body, p, span, h1, h2, h3, h4, h5, h6, li, ul, ol, div, a {
+        color: #000 !important;
+        text-shadow: none !important;
+    }
     body {
         background: white;
-        color: black;
     }
     .bg-gradient, .bg-blob, nav, .presentation-box, .back-btn, button, .form-header p {
         display: none !important;
