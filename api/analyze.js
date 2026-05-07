@@ -21,11 +21,17 @@ module.exports = async (req, res) => {
         
 "${text}"
 
+Instrucción Crítica: Debes basar todo tu análisis e información ESTRICTAMENTE en la legislación chilena vigente. Es obligatorio buscar concordancias y extraer información específica de las siguientes leyes según corresponda al caso:
+- Ley 21.643 (Ley Karin) sobre acoso laboral, sexual y violencia en el trabajo.
+- Código del Trabajo (Especialmente el Título de Protección a los Trabajadores).
+- Estatuto Administrativo (Ley 18.834) si involucra funcionarios públicos.
+- Código Civil chileno si hay implicancias de responsabilidad civil o contratos.
+
 Proporciona una respuesta profesional, estructurada y empática (en HTML básico para incrustar, usando <h3> para títulos, <p> para párrafos y <ul>/<li> para listas, sin estilos). Divídela en:
 <h3>Análisis Legal Preliminar</h3>
-(qué leyes aplican, ej. Ley 21.643 Ley Karin, Código del Trabajo, Estatuto Administrativo, etc.).
+(Menciona de forma explícita qué artículos de la Ley Karin, Código del Trabajo, Estatuto Administrativo o Código Civil aplican a los hechos relatados).
 <h3>Gravedad y Recomendaciones</h3>
-(qué debería hacer el usuario como próximos pasos).
+(Qué debería hacer el usuario como próximos pasos legales y probatorios).
 Mantenlo conciso, directo y fácil de entender para alguien que no es abogado.`;
 
         // Llamada a la API de Gemini usando fetch nativo

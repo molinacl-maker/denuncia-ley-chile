@@ -21,6 +21,12 @@ El documento se basa en el siguiente caso del usuario (bajo la categoría ${cate
 
 "${text}"
 
+Instrucción Crítica: Para fundamentar jurídicamente esta presentación, es OBLIGATORIO que extraigas y cites explícitamente los artículos que correspondan de:
+- Ley 21.643 (Ley Karin) sobre acoso y violencia.
+- Código del Trabajo chileno.
+- Estatuto Administrativo (Ley 18.834) si es pertinente.
+- Código Civil chileno.
+
 Instrucciones de formato:
 - Usa un tono estrictamente formal y jurídico chileno.
 - Devuelve la respuesta en formato HTML básico usando <h1>, <h2>, <p>, <br>.
